@@ -1,0 +1,49 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-flamingo: 255 0 128;
+  --color-sunset: 255 204 153;
+}
+
+.bg-flamingo-in-sunset {
+  background-image:
+    radial-gradient(circle at 100% 0%, rgb(var(--color-flamingo)), rgb(var(--color-flamingo) / 0)),
+    radial-gradient(circle at 0% 100%, rgb(var(--color-sunset)), rgb(var(--color-sunset) / 0));
+}
+
+.text-shadow-flamingo\/20 {
+  text-shadow: -1px 0 0 rgba(var(--color-flamingo) / 0.2);
+}
+
+/* .w3ch { width: 3ch; } */
+
+.loader > div {
+  display: inline-block;
+  margin: 0.125em;
+  width: 1em;
+  height: 1em;
+  border-radius: 100%;
+  background-color: black;
+
+  animation: ball-pulse-sync 0.8s ease-in-out alternate infinite;
+  /* animation-delay: 0.32s; */
+}
+
+.loader > div:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.loader > div:nth-child(2) {
+  animation-delay: 0.3s;
+}
+
+.loader > div:nth-child(3) {
+  animation-delay: 0.6s;
+}
+
+@keyframes ball-pulse-sync {
+  0% { transform:translateY(8px); }
+  100% { transform:translateY(-8px); }
+}

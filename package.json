@@ -1,0 +1,25 @@
+{
+  "private": true,
+  "name": "hn.minimal",
+  "version": "0.1.0",
+  "description": "a minimal hackernews client",
+  "license": "MIT",
+  "source": "src/index.html",
+  "scripts": {
+    "start": "parcel",
+    "build": "parcel build",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "ky": "^0.30.0",
+    "p-queue": "^6.6.2",
+    "preact": "^10.7.2"
+  },
+  "devDependencies": {
+    "parcel": "^2.5.0",
+    "tailwindcss": "^3.0.24"
+  },
+  "alias": {
+    "preact/jsx-dev-runtime": "preact/jsx-runtime"
+  }
+}

@@ -1,7 +1,7 @@
-import ky from "https://cdn.skypack.dev/ky@0.30.0";
-import Queue from "https://cdn.skypack.dev/p-queue@7.2.0";
-import { Fragment, h, render } from "https://cdn.skypack.dev/preact@10.7.2";
-import { useCallback, useEffect, useMemo, useReducer, useState } from "https://cdn.skypack.dev/preact@10.7.2/hooks";
+import ky from "ky";
+import Queue from "p-queue";
+import { Fragment, h, render } from "preact";
+import { useCallback, useEffect, useMemo, useReducer, useState } from "preact/hooks";
 
 const api = ky.create({ prefixUrl: "https://hacker-news.firebaseio.com/v0/" });
 
@@ -13,12 +13,25 @@ const cls = (...args) => args.filter(c => c).join(" ");
 
 const pageSize = 30;
 
+function Loader() {
+  return (
+    <div className="loader">
+      <div />
+      <div />
+      <div />
+    </div>
+  );
+}
+
 function Item({ data, highlighted }) {
   const host = useMemo(() => data.url && new URL(data.url).host, [data.url]);
-  return h("div", { className: "ml2" }, [
-    h("a", { href: data.url, className: cls("link dark-gray dim f5", highlighted && "red") }, data.title),
-    highlighted && h("span", { className: "ml2 f7 gray" }, host),
-  ]);
+
+  return (
+    <div>
+      <a href={data.url} className={cls("link dark-gray dim text-sm", highlighted && "red")}>{data.title}</a>
+      <span className={cls("ml-2 text-xs text-stone-400", !highlighted && "hidden")}>{host}</span>
+    </div>
+  );
 }
 
 function List({ keys }) {
@@ -73,26 +86,37 @@ function List({ keys }) {
     setSize(Math.min(size + pageSize, keys.length));
   }, [keys, size]);
 
-  return h("form", { onKeyDown }, [
-    h("ol", { className: "list ma0 pa0" }, slice.map((key, index) => h("li", { key }, [
-      h("div", { className: cls("flex items-stretch bb b--light-gray", index === cursor && "b") }, [
-        h("label", { className: "flex items-center ph2 pv3" }, [
-          h("input", { type: "checkbox", checked: selection[key], onChange: () => {/* TODO */} }),
-          h("span", { className: "w3ch ml2 f7 tr gray" }, `${index + 1}`),
-          key in data ? h(Item, { data: data[key], highlighted: index === cursor }) : "…",
-        ]),
-      ]),
-    ]))),
-    h("button", { type: "button", onClick: reveal }, "More"),
-  ]);
+  return (
+    <form onKeyDown={onKeyDown}>
+      <ol className="">
+        {slice.map((key, index) => (
+          <li key={key}>
+            <div className={cls("flex items-stretch border-b border-stone-200", index === cursor && "b")}>
+              <label className="flex items-center gap-2 px-2 py-3">
+                <input type="checkbox" checked={selection[key]} onChange={() => {/* TODO */}} />
+                <span className="flex-none w-3ch text-xs text-center text-stone-400">{index + 1}</span>
+                {key in data ? <Item data={data[key]} highlighted={index === cursor} /> : "…"}
+              </label>
+            </div>
+          </li>
+        ))}
+      </ol>
+      <button type="button" onClick={reveal}>More</button>
+      <Loader />
+    </form>
+  );
 }
 
 function Header({ children }) {
-  return h("header", { className: "sticky top-0 pa2 bg-gradient near-white bb b--header" }, children);
+  return (
+    <header className="sticky top-0 border-b border-flamingo/10 p-2 bg-flamingo-in-sunset">
+      {children}
+    </header>
+  );
 }
 
 function Main({ children }) {
-  return h("main", { className: "mb2 pa2" }, children);
+  return <main className="mb-2 p-2">{children}</main>;
 }
 
 function App() {
@@ -112,13 +136,19 @@ function App() {
 
   const loading = !keys;
 
-  if (loading) return h("strong", null, "Loading…");
-  if (error) return h("strong", null, "Oops!");
+  if (loading) return <strong>Loading…</strong>;
+  if (error) return <strong>Oops!</strong>;
 
-  return h(Fragment, null, [
-    h(Header, null, [h("h1", { className: "f3 ma0 ph2 ts-primary" }, "hn")]),
-    h(Main, null, [h(List, { keys })]),
-  ]);
+  return (
+    <>
+      <Header>
+        <h1 className="px-2 text-2xl text-stone-100 font-bold text-shadow-flamingo/20">hn</h1>
+      </Header>
+      <Main>
+        <List keys={keys} />
+      </Main>
+    </>
+  );
 }
 
 const app = h(App);

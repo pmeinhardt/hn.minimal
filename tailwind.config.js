@@ -1,0 +1,22 @@
+function rgbFromVariable(name) {
+  return ({ opacityValue: opacity }) => {
+    if (typeof opacity === "undefined") return `rgb(var(${name}))`;
+    return `rgb(var(${name}) / ${opacity})`;
+  };
+}
+
+module.exports = {
+  content: ["./src/**/*.{html,tsx}"],
+  theme: {
+    extend: {
+      colors: {
+        flamingo: rgbFromVariable("--color-flamingo"),
+        sunset: rgbFromVariable("--color-sunset"),
+      },
+      spacing: {
+        "3ch": "3ch",
+      },
+    },
+  },
+  plugins: [],
+};

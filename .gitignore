@@ -1,0 +1,20 @@
+# Dependency directories
+node_modules/
+
+# Build output
+dist/
+
+# Parcel cache (https://parceljs.org/)
+.cache
+.parcel-cache
+
+# Optional npm cache directory
+.npm
+
+# Optional ESLint cache
+.eslintcache
+
+# Logs
+logs
+*.log
+npm-debug.log*
