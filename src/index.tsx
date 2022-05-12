@@ -93,7 +93,7 @@ function List({ keys }) {
           <li key={key}>
             <div className={cls("flex items-stretch border-b border-stone-200", index === cursor && "b")}>
               <label className="flex items-center gap-2 px-2 py-3">
-                <input type="checkbox" checked={selection[key]} onChange={() => {/* TODO */}} />
+                <input className="accent-cyan-600" type="checkbox" checked={selection[key]} onChange={() => {/* TODO */}} />
                 <span className="flex-none w-3ch text-xs text-center text-stone-400">{index + 1}</span>
                 {key in data ? <Item data={data[key]} highlighted={index === cursor} /> : "…"}
               </label>
