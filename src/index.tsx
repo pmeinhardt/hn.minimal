@@ -15,10 +15,10 @@ const pageSize = 30;
 
 function Loader() {
   return (
-    <div className="loader">
-      <div />
-      <div />
-      <div />
+    <div className="flex gap-1">
+      <div className="animate-bounce bg-stone-300 w-2 h-2 rounded-full" />
+      <div className="animate-bounce animate-delay-200 bg-stone-300 w-2 h-2 rounded-full" />
+      <div className="animate-bounce animate-delay-400 bg-stone-300 w-2 h-2 rounded-full" />
     </div>
   );
 }
