@@ -1,6 +1,6 @@
 import ky from "ky";
 import Queue from "p-queue";
-import { Fragment, h, render } from "preact";
+import { render } from "preact";
 import { useCallback, useEffect, useMemo, useReducer, useState } from "preact/hooks";
 
 const api = ky.create({ prefixUrl: "https://hacker-news.firebaseio.com/v0/" });
@@ -151,6 +151,4 @@ function App() {
   );
 }
 
-const app = h(App);
-
-render(app, document.body);
+render(<App />, document.body);
