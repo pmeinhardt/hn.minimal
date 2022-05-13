@@ -9,6 +9,8 @@ import React, {
 } from "react";
 import { createRoot } from "react-dom/client";
 
+import useWindowEvent from "./interaction/useWindowEvent";
+
 const api = ky.create({ prefixUrl: "https://hacker-news.firebaseio.com/v0/" });
 
 const fetch = (key) => api.get(key).json();
@@ -72,7 +74,7 @@ function List({ keys }) {
   const [selection, setSelection] = useState({});
   const [cursor, setCursor] = useState(undefined);
 
-  const onKeyDown = useCallback(
+  const onKeyDown = useWindowEvent("keydown",
     (event) => {
       switch (event.key) {
         case "j": // down
@@ -110,12 +112,14 @@ function List({ keys }) {
     [cursor, selection]
   );
 
+  useWindowEvent("keydown", onKeyDown);
+
   const reveal = useCallback(() => {
     setSize(Math.min(size + pageSize, keys.length));
   }, [keys, size]);
 
   return (
-    <form onKeyDown={onKeyDown}>
+    <form>
       <ol>
         {slice.map((key, index) => (
           <li key={key}>
