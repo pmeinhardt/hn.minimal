@@ -184,9 +184,6 @@ function App() {
 
   const loading = !keys;
 
-  if (loading) return <strong>Loading…</strong>;
-  if (error) return <strong>Oops!</strong>;
-
   return (
     <>
       <Header>
@@ -195,7 +192,8 @@ function App() {
         </h1>
       </Header>
       <Main>
-        <List keys={keys} />
+        {error && <strong>Oops!</strong>}
+        {keys ? <List keys={keys} /> : <p>Loading stories…</p>}
       </Main>
     </>
   );
