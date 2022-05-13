@@ -1,8 +1,8 @@
 function rgbFromVariable(name) {
-  return ({ opacityValue: opacity }) => {
-    if (typeof opacity === "undefined") return `rgb(var(${name}))`;
-    return `rgb(var(${name}) / ${opacity})`;
-  };
+  return ({ opacityValue }) =>
+    typeof opacityValue !== "undefined"
+      ? `rgb(var(${name}) / ${opacityValue})`
+      : `rgb(var(${name}))`;
 }
 
 module.exports = {
