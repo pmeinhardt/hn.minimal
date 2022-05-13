@@ -5,6 +5,7 @@ import React, {
   useEffect,
   useMemo,
   useReducer,
+  useRef,
   useState,
 } from "react";
 import { createRoot } from "react-dom/client";
@@ -74,7 +75,16 @@ function List({ keys }) {
   const [selection, setSelection] = useState({});
   const [cursor, setCursor] = useState(undefined);
 
-  const onKeyDown = useWindowEvent("keydown",
+  const onToggleSelection = useCallback(
+    (event) => {
+      const key = event.target.value;
+      setSelection({ ...selection, [key]: !selection[key] });
+    },
+    [selection]
+  );
+
+  const onKeyDown = useWindowEvent(
+    "keydown",
     (event) => {
       switch (event.key) {
         case "j": // down
@@ -126,17 +136,16 @@ function List({ keys }) {
             <div
               className={cls(
                 "flex items-stretch border-b border-stone-200",
-                index === cursor && "b"
+                index === cursor && "font-bold"
               )}
             >
               <label className="flex items-center gap-2 px-2 py-3">
                 <input
                   className="accent-cyan-600"
                   type="checkbox"
-                  checked={selection[key]}
-                  onChange={() => {
-                    /* TODO */
-                  }}
+                  value={key}
+                  checked={selection[key] ?? false}
+                  onChange={onToggleSelection}
                 />
                 <span className="w-3ch flex-none text-center text-xs text-stone-400">
                   {index + 1}
