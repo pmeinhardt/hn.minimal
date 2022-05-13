@@ -1,7 +1,13 @@
 import ky from "ky";
 import Queue from "p-queue";
-import { render } from "preact";
-import { useCallback, useEffect, useMemo, useReducer, useState } from "preact/hooks";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useReducer,
+  useState,
+} from "react";
+import { createRoot } from "react-dom/client";
 
 const api = ky.create({ prefixUrl: "https://hacker-news.firebaseio.com/v0/" });
 
@@ -9,7 +15,7 @@ const fetch = (key) => api.get(key).json();
 
 const queue = new Queue({ concurrency: 4 });
 
-const cls = (...args) => args.filter(c => c).join(" ");
+const cls = (...args) => args.filter((c) => c).join(" ");
 
 const pageSize = 30;
 
@@ -28,59 +34,81 @@ function Item({ data, highlighted }) {
 
   return (
     <div>
-      <a href={data.url} className={cls("link dark-gray dim text-sm", highlighted && "red")}>{data.title}</a>
-      <span className={cls("ml-2 text-xs text-stone-400", !highlighted && "hidden")}>{host}</span>
+      <a
+        href={data.url}
+        className={cls("link dark-gray dim text-sm", highlighted && "red")}
+      >
+        {data.title}
+      </a>
+      <span
+        className={cls("ml-2 text-xs text-stone-400", !highlighted && "hidden")}
+      >
+        {host}
+      </span>
     </div>
   );
 }
 
 function List({ keys }) {
   const [size, setSize] = useState(Math.min(pageSize, keys.length));
-  const [data, add] = useReducer((prev, [key, item]) => ({ ...prev, [key]: item }), {});
+  const [data, add] = useReducer(
+    (prev, [key, item]) => ({ ...prev, [key]: item }),
+    {}
+  );
 
   const slice = useMemo(() => keys.slice(0, size), [keys, size]);
 
   useEffect(() => {
-    slice.filter((key) => !(key in data)).forEach((key) => {
-      queue.add(async () => {
-        const result = await fetch(`item/${key}.json`);
-        add([key, result]);
+    slice
+      .filter((key) => !(key in data))
+      .forEach((key) => {
+        queue.add(async () => {
+          const result = await fetch(`item/${key}.json`);
+          add([key, result]);
+        });
       });
-    });
   }, [size]);
 
   const [selection, setSelection] = useState({});
   const [cursor, setCursor] = useState(undefined);
 
-  const onKeyDown = useCallback((event) => {
-    switch (event.key) {
-      case "j": // down
-        if (typeof cursor === "number") {
-          setCursor(Math.min(cursor + 1, size - 1));
-        } else {
-          setCursor(0);
-        }
-        break;
+  const onKeyDown = useCallback(
+    (event) => {
+      switch (event.key) {
+        case "j": // down
+          if (typeof cursor === "number") {
+            setCursor(Math.min(cursor + 1, size - 1));
+          } else {
+            setCursor(0);
+          }
+          break;
 
-      case "k": // up
-        if (typeof cursor === "number") {
-          setCursor(Math.max(cursor - 1, 0));
-        }
-        break;
+        case "k": // up
+          if (typeof cursor === "number") {
+            setCursor(Math.max(cursor - 1, 0));
+          }
+          break;
 
-      case "x": // toggle
-        const key = keys[cursor];
-        setSelection({ ...selection, [key]: !selection[key] });
-        break;
+        case "x": // toggle
+          setSelection({
+            ...selection,
+            [keys[cursor]]: !selection[keys[cursor]],
+          });
+          break;
 
-      case "o": // open
-        const items = Object.entries(selection)
-          .filter(([, selected]) => selected)
-          .map(([key]) => data[key]);
-        console.log(items);
-        break;
-    }
-  }, [cursor, selection]);
+        case "o": // open
+          Object.entries(selection)
+            .filter(([, selected]) => selected)
+            .map(([key]) => data[key])
+            .forEach(console.log);
+          break;
+
+        default:
+          break;
+      }
+    },
+    [cursor, selection]
+  );
 
   const reveal = useCallback(() => {
     setSize(Math.min(size + pageSize, keys.length));
@@ -88,20 +116,40 @@ function List({ keys }) {
 
   return (
     <form onKeyDown={onKeyDown}>
-      <ol className="">
+      <ol>
         {slice.map((key, index) => (
           <li key={key}>
-            <div className={cls("flex items-stretch border-b border-stone-200", index === cursor && "b")}>
+            <div
+              className={cls(
+                "flex items-stretch border-b border-stone-200",
+                index === cursor && "b"
+              )}
+            >
               <label className="flex items-center gap-2 px-2 py-3">
-                <input className="accent-cyan-600" type="checkbox" checked={selection[key]} onChange={() => {/* TODO */}} />
-                <span className="flex-none w-3ch text-xs text-center text-stone-400">{index + 1}</span>
-                {key in data ? <Item data={data[key]} highlighted={index === cursor} /> : "…"}
+                <input
+                  className="accent-cyan-600"
+                  type="checkbox"
+                  checked={selection[key]}
+                  onChange={() => {
+                    /* TODO */
+                  }}
+                />
+                <span className="flex-none w-3ch text-xs text-center text-stone-400">
+                  {index + 1}
+                </span>
+                {key in data ? (
+                  <Item data={data[key]} highlighted={index === cursor} />
+                ) : (
+                  "…"
+                )}
               </label>
             </div>
           </li>
         ))}
       </ol>
-      <button type="button" onClick={reveal}>More</button>
+      <button type="button" onClick={reveal}>
+        More
+      </button>
       <Loader />
     </form>
   );
@@ -142,7 +190,9 @@ function App() {
   return (
     <>
       <Header>
-        <h1 className="px-2 text-2xl text-stone-100 font-bold text-shadow-flamingo/20">hn</h1>
+        <h1 className="px-2 text-2xl text-stone-100 font-bold text-shadow-flamingo/20">
+          hn
+        </h1>
       </Header>
       <Main>
         <List keys={keys} />
@@ -151,4 +201,6 @@ function App() {
   );
 }
 
-render(<App />, document.body);
+const root = createRoot(document.getElementById("root"));
+
+root.render(<App />);
