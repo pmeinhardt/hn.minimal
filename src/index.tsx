@@ -39,7 +39,7 @@ function Item({ data, highlighted }) {
     <div>
       <a
         href={data.url}
-        className={cls("link dark-gray dim text-sm", highlighted && "red")}
+        className="text-sm text-stone-800 visited:text-stone-400"
       >
         {data.title}
       </a>
