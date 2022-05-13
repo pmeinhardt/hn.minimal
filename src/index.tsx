@@ -22,9 +22,9 @@ const pageSize = 30;
 function Loader() {
   return (
     <div className="flex gap-1">
-      <div className="animate-bounce bg-stone-300 w-2 h-2 rounded-full" />
-      <div className="animate-bounce animate-delay-200 bg-stone-300 w-2 h-2 rounded-full" />
-      <div className="animate-bounce animate-delay-400 bg-stone-300 w-2 h-2 rounded-full" />
+      <div className="h-2 w-2 animate-bounce rounded-full bg-stone-300" />
+      <div className="animate-delay-200 h-2 w-2 animate-bounce rounded-full bg-stone-300" />
+      <div className="animate-delay-400 h-2 w-2 animate-bounce rounded-full bg-stone-300" />
     </div>
   );
 }
@@ -134,7 +134,7 @@ function List({ keys }) {
                     /* TODO */
                   }}
                 />
-                <span className="flex-none w-3ch text-xs text-center text-stone-400">
+                <span className="w-3ch flex-none text-center text-xs text-stone-400">
                   {index + 1}
                 </span>
                 {key in data ? (
@@ -157,7 +157,7 @@ function List({ keys }) {
 
 function Header({ children }) {
   return (
-    <header className="sticky top-0 border-b border-flamingo/10 p-2 bg-flamingo-in-sunset">
+    <header className="bg-flamingo-in-sunset sticky top-0 border-b border-flamingo/10 p-2">
       {children}
     </header>
   );
@@ -187,7 +187,7 @@ function App() {
   return (
     <>
       <Header>
-        <h1 className="px-2 text-2xl text-stone-100 font-bold text-shadow-flamingo/20">
+        <h1 className="text-shadow-flamingo/20 px-2 text-2xl font-bold text-stone-100">
           hn
         </h1>
       </Header>
