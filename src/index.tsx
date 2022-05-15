@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import Queue from "p-queue";
 import React, {
   useCallback,
@@ -15,8 +16,6 @@ import Header from "./layout/Header";
 import Main from "./layout/Main";
 
 const queue = new Queue({ concurrency: 4 });
-
-const cls = (...args) => args.filter((c) => c).join(" ");
 
 const open = ({ url }) => window.open(url, "_blank");
 
@@ -50,7 +49,10 @@ function Item({
         {data.title}
       </a>
       <span
-        className={cls("ml-2 text-xs text-stone-400", !highlighted && "hidden")}
+        className={clsx(
+          "ml-2 text-xs text-stone-400",
+          !highlighted && "hidden"
+        )}
       >
         {host}
       </span>
@@ -145,7 +147,7 @@ function List({ keys }: { keys: string[] }) {
         {slice.map((key, index) => (
           <li key={key} ref={index === cursor ? itemRef : undefined}>
             <div
-              className={cls(
+              className={clsx(
                 "flex items-stretch border-b border-stone-200",
                 index === cursor && "font-bold"
               )}
