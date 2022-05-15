@@ -75,6 +75,8 @@ function List({ keys }) {
   const [selection, setSelection] = useState({});
   const [cursor, setCursor] = useState(undefined);
 
+  const itemRef = useRef();
+
   const onToggleSelection = useCallback(
     (event) => {
       const key = event.target.value;
@@ -124,6 +126,10 @@ function List({ keys }) {
 
   useWindowEvent("keydown", onKeyDown);
 
+  useEffect(() => {
+    itemRef.current?.scrollIntoView({ block: "nearest" });
+  }, [itemRef.current]);
+
   const reveal = useCallback(() => {
     setSize(Math.min(size + pageSize, keys.length));
   }, [keys, size]);
@@ -132,7 +138,7 @@ function List({ keys }) {
     <form>
       <ol>
         {slice.map((key, index) => (
-          <li key={key}>
+          <li key={key} ref={index === cursor ? itemRef : undefined}>
             <div
               className={cls(
                 "flex items-stretch border-b border-stone-200",
