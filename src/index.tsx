@@ -1,4 +1,3 @@
-import ky from "ky";
 import Queue from "p-queue";
 import React, {
   useCallback,
@@ -10,11 +9,10 @@ import React, {
 } from "react";
 import { createRoot } from "react-dom/client";
 
+import { get } from "./api";
 import useWindowEvent from "./interaction/useWindowEvent";
-
-const api = ky.create({ prefixUrl: "https://hacker-news.firebaseio.com/v0/" });
-
-const fetch = (key) => api.get(key).json();
+import Header from "./layout/Header";
+import Main from "./layout/Main";
 
 const queue = new Queue({ concurrency: 4 });
 
@@ -34,7 +32,13 @@ function Loader() {
   );
 }
 
-function Item({ data, highlighted }) {
+function Item({
+  data,
+  highlighted,
+}: {
+  data: { title: string; url?: string };
+  highlighted: boolean;
+}) {
   const host = useMemo(() => data.url && new URL(data.url).host, [data.url]);
 
   return (
@@ -54,7 +58,7 @@ function Item({ data, highlighted }) {
   );
 }
 
-function List({ keys }) {
+function List({ keys }: { keys: string[] }) {
   const [size, setSize] = useState(Math.min(pageSize, keys.length));
   const [data, add] = useReducer(
     (prev, [key, item]) => ({ ...prev, [key]: item }),
@@ -68,7 +72,7 @@ function List({ keys }) {
       .filter((key) => !(key in data))
       .forEach((key) => {
         queue.add(async () => {
-          const result = await fetch(`item/${key}.json`);
+          const result = await get(`item/${key}.json`);
           add([key, result]);
         });
       });
@@ -176,18 +180,6 @@ function List({ keys }) {
   );
 }
 
-function Header({ children }) {
-  return (
-    <header className="bg-flamingo-in-sunset sticky top-0 border-b border-flamingo/10 p-2">
-      {children}
-    </header>
-  );
-}
-
-function Main({ children }) {
-  return <main className="mb-2 p-2">{children}</main>;
-}
-
 function App() {
   const [error, setError] = useState(undefined);
   const [keys, setKeys] = useState(undefined);
@@ -195,7 +187,7 @@ function App() {
   useEffect(() => {
     (async function load() {
       try {
-        const result = await fetch("topstories.json");
+        const result = await get("topstories.json");
         setKeys(result);
       } catch (e) {
         setError(e);
