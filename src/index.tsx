@@ -91,8 +91,7 @@ function List({ keys }: { keys: string[] }) {
     [selection]
   );
 
-  const onKeyDown = useWindowEvent(
-    "keydown",
+  const onKeyDown = useCallback(
     (event) => {
       switch (event.key) {
         case "j": // down
@@ -127,7 +126,7 @@ function List({ keys }: { keys: string[] }) {
           break;
       }
     },
-    [cursor, selection]
+    [cursor, data, keys, selection, size]
   );
 
   useWindowEvent("keydown", onKeyDown);
