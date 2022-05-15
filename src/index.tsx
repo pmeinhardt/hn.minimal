@@ -195,6 +195,12 @@ function App() {
         <h1 className="text-shadow-flamingo/20 px-2 text-2xl font-bold text-stone-100">
           hn
         </h1>
+        <div className="text-shadow-flamingo/20 flex gap-5 px-2 text-xs text-stone-100">
+          <span className="font-mono">j ↓</span>
+          <span className="font-mono">k ↑</span>
+          <span className="font-mono">x ✓</span>
+          <span className="font-mono">o ▹</span>
+        </div>
       </Header>
       <Main>
         {error ? (
