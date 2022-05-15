@@ -164,9 +164,11 @@ function List({ keys }: { keys: string[] }) {
           </li>
         ))}
       </ol>
-      <button type="button" onClick={reveal}>
-        More
-      </button>
+      {size < keys.length && (
+        <button type="button" onClick={reveal}>
+          More
+        </button>
+      )}
       <Spinner />
     </form>
   );
