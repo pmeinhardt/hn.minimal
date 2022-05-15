@@ -11,7 +11,6 @@ import React, {
 
 import { get } from "../api";
 import useWindowEvent from "../hooks/useWindowEvent";
-import Spinner from "./Spinner";
 
 const queue = new Queue({ concurrency: 4 });
 
