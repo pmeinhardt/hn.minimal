@@ -192,15 +192,23 @@ function App() {
   return (
     <>
       <Header>
-        <h1 className="text-shadow-flamingo/20 px-2 text-2xl font-bold text-stone-100">
-          hn
-        </h1>
+        <h1 className="text-2xl font-bold">hn</h1>
         {keys && (
-          <div className="text-shadow-flamingo/20 flex gap-5 px-2 text-xs text-stone-100">
-            <span className="font-mono">j ↓</span>
-            <span className="font-mono">k ↑</span>
-            <span className="font-mono">x ✓</span>
-            <span className="font-mono">o ▹</span>
+          <div className="font-mono text-xs">
+            <ul className="flex gap-5">
+              <li>
+                <kbd>j</kbd> ↓
+              </li>
+              <li>
+                <kbd>k</kbd> ↑
+              </li>
+              <li>
+                <kbd>x</kbd> ✓
+              </li>
+              <li>
+                <kbd>o</kbd> ▹
+              </li>
+            </ul>
           </div>
         )}
       </Header>
