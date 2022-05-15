@@ -51,7 +51,10 @@ function App(/* _: Props */) {
         {keys ? (
           <List keys={keys} />
         ) : error ? (
-          <strong>Oops!</strong>
+          <div className="py-4">
+            <h4 className="mb-1 text-xl font-bold">Oops! 💥</h4>
+            <p>{error.message}</p>
+          </div>
         ) : (
           <div className="flex justify-center py-4">
             <Spinner />
