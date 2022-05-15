@@ -11,25 +11,16 @@ import React, {
 import { createRoot } from "react-dom/client";
 
 import { get } from "./api";
-import useWindowEvent from "./interaction/useWindowEvent";
-import Header from "./layout/Header";
-import Main from "./layout/Main";
+import Header from "./components/Header";
+import Main from "./components/Main";
+import Spinner from "./components/Spinner";
+import useWindowEvent from "./hooks/useWindowEvent";
 
 const queue = new Queue({ concurrency: 4 });
 
 const open = ({ url }) => window.open(url, "_blank");
 
 const pageSize = 30;
-
-function Loader() {
-  return (
-    <div className="flex gap-1">
-      <div className="h-2 w-2 animate-bounce rounded-full bg-stone-300" />
-      <div className="animate-delay-200 h-2 w-2 animate-bounce rounded-full bg-stone-300" />
-      <div className="animate-delay-400 h-2 w-2 animate-bounce rounded-full bg-stone-300" />
-    </div>
-  );
-}
 
 function Item({
   data,
@@ -176,7 +167,7 @@ function List({ keys }: { keys: string[] }) {
       <button type="button" onClick={reveal}>
         More
       </button>
-      <Loader />
+      <Spinner />
     </form>
   );
 }
