@@ -70,6 +70,10 @@ function List({ keys }: Props) {
       });
   }, [size]);
 
+  const reveal = useCallback(() => {
+    setSize(Math.min(size + pageSize, keys.length));
+  }, [keys, size]);
+
   const [selection, setSelection] = useState({});
   const [cursor, setCursor] = useState(undefined);
 
@@ -88,7 +92,8 @@ function List({ keys }: Props) {
       switch (event.key) {
         case "j": // down
           if (typeof cursor === "number") {
-            setCursor(Math.min(cursor + 1, size - 1));
+            setCursor(Math.min(cursor + 1, size, keys.length));
+            if (cursor >= size) reveal();
           } else {
             setCursor(0);
           }
@@ -118,7 +123,7 @@ function List({ keys }: Props) {
           break;
       }
     },
-    [cursor, data, keys, selection, size]
+    [cursor, data, keys, reveal, selection, size]
   );
 
   useWindowEvent("keydown", onKeyDown);
@@ -126,10 +131,6 @@ function List({ keys }: Props) {
   useEffect(() => {
     itemRef.current?.scrollIntoView({ block: "nearest" });
   }, [itemRef.current]);
-
-  const reveal = useCallback(() => {
-    setSize(Math.min(size + pageSize, keys.length));
-  }, [keys, size]);
 
   return (
     <form>
@@ -166,13 +167,25 @@ function List({ keys }: Props) {
             </div>
           </li>
         ))}
+        {slice.length < keys.length && (
+          <li
+            key="more"
+            className="-mx-2"
+            ref={cursor === size ? itemRef : undefined}
+          >
+            <button
+              type="button"
+              onClick={reveal}
+              className={clsx(
+                "block w-full p-2 text-left",
+                cursor === size && "font-bold"
+              )}
+            >
+              Show more
+            </button>
+          </li>
+        )}
       </ol>
-      {size < keys.length && (
-        <button type="button" onClick={reveal}>
-          More
-        </button>
-      )}
-      <Spinner />
     </form>
   );
 }
