@@ -48,12 +48,14 @@ function App(/* _: Props */) {
       </Header>
       <Main>
         {/* eslint-disable-next-line no-nested-ternary */}
-        {error ? (
-          <strong>Oops!</strong>
-        ) : keys ? (
+        {keys ? (
           <List keys={keys} />
+        ) : error ? (
+          <strong>Oops!</strong>
         ) : (
-          <Spinner />
+          <div className="flex justify-center py-4">
+            <Spinner />
+          </div>
         )}
       </Main>
     </>
