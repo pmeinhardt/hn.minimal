@@ -20,6 +20,8 @@ const queue = new Queue({ concurrency: 4 });
 
 const cls = (...args) => args.filter((c) => c).join(" ");
 
+const open = ({ url }) => window.open(url, "_blank");
+
 const pageSize = 30;
 
 function Loader() {
@@ -114,7 +116,7 @@ function List({ keys }) {
           Object.entries(selection)
             .filter(([, selected]) => selected)
             .map(([key]) => data[key])
-            .forEach(console.log);
+            .forEach(open);
           break;
 
         default:
