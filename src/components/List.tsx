@@ -14,8 +14,6 @@ import useWindowEvent from "../hooks/useWindowEvent";
 
 const queue = new Queue({ concurrency: 4 });
 
-const open = ({ url }) => window.open(url, "_blank");
-
 const pageSize = 15;
 
 function Item({
@@ -69,12 +67,24 @@ function List({ keys }: Props) {
       });
   }, [size]);
 
+  const [selection, setSelection] = useState({});
+  const [cursor, setCursor] = useState(undefined);
+
+  const selected = useMemo(
+    () =>
+      Object.entries(selection)
+        .filter(([, value]) => value)
+        .map(([key]) => data[key]),
+    [data, selection]
+  );
+
   const reveal = useCallback(() => {
     setSize(Math.min(size + pageSize, keys.length));
   }, [keys, size]);
 
-  const [selection, setSelection] = useState({});
-  const [cursor, setCursor] = useState(undefined);
+  const open = useCallback(() => {
+    selected.forEach(({ url }) => window.open(url, "_blank"));
+  }, [selected]);
 
   const itemRef = useRef();
 
@@ -112,10 +122,7 @@ function List({ keys }: Props) {
           break;
 
         case "o": // open
-          Object.entries(selection)
-            .filter(([, selected]) => selected)
-            .map(([key]) => data[key])
-            .forEach(open);
+          open();
           break;
 
         default:
@@ -185,6 +192,17 @@ function List({ keys }: Props) {
           </li>
         )}
       </ol>
+      {selected.length > 0 && (
+        <div className="fixed bottom-0 right-0 p-4">
+          <button
+            type="button"
+            onClick={open}
+            className="text-shadow-flamingo/20 block flex h-10 w-10 items-center justify-center rounded-full bg-sunset/90 text-stone-100 drop-shadow-md"
+          >
+            ▹
+          </button>
+        </div>
+      )}
     </form>
   );
 }
