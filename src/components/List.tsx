@@ -135,7 +135,11 @@ function List({ keys }: Props) {
     <form>
       <ol>
         {slice.map((key, index) => (
-          <li key={key} ref={index === cursor ? itemRef : undefined}>
+          <li
+            key={key}
+            className="-mx-2"
+            ref={index === cursor ? itemRef : undefined}
+          >
             <div
               className={clsx(
                 "flex items-stretch border-b border-stone-200",
