@@ -195,8 +195,6 @@ function App() {
     })();
   }, []);
 
-  const loading = !keys;
-
   return (
     <>
       <Header>
@@ -205,8 +203,13 @@ function App() {
         </h1>
       </Header>
       <Main>
-        {error && <strong>Oops!</strong>}
-        {keys ? <List keys={keys} /> : <p>Loading stories…</p>}
+        {error ? (
+          <strong>Oops!</strong>
+        ) : keys ? (
+          <List keys={keys} />
+        ) : (
+          <p>Loading stories…</p>
+        )}
       </Main>
     </>
   );
