@@ -157,7 +157,7 @@ function List({ keys }: { keys: string[] }) {
                 {key in data ? (
                   <Item data={data[key]} highlighted={index === cursor} />
                 ) : (
-                  "…"
+                  <a href={`https://news.ycombinator.com/item?id=${key}`}>…</a>
                 )}
               </label>
             </div>
