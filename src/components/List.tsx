@@ -78,6 +78,13 @@ function List({ keys }: Props) {
     [data, selection]
   );
 
+  const toggle = useCallback(
+    (key) => {
+      setSelection({ ...selection, [key]: !selection[key] });
+    },
+    [selection]
+  );
+
   const reveal = useCallback(() => {
     setSize(Math.min(size + pageSize, keys.length));
   }, [keys, size]);
@@ -90,10 +97,9 @@ function List({ keys }: Props) {
 
   const onToggleSelection = useCallback(
     (event) => {
-      const key = event.target.value;
-      setSelection({ ...selection, [key]: !selection[key] });
+      toggle(event.target.value);
     },
-    [selection]
+    [toggle]
   );
 
   const onKeyDown = useCallback(
@@ -115,10 +121,7 @@ function List({ keys }: Props) {
           break;
 
         case "x": // toggle
-          setSelection({
-            ...selection,
-            [keys[cursor]]: !selection[keys[cursor]],
-          });
+          toggle(keys[cursor]);
           break;
 
         case "o": // open
