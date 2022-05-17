@@ -4,7 +4,6 @@ import React, {
   useCallback,
   useEffect,
   useMemo,
-  useReducer,
   useRef,
   useState,
 } from "react";
@@ -50,10 +49,7 @@ export type Props = { keys: string[] };
 
 function List({ keys }: Props) {
   const [size, setSize] = useState(Math.min(pageSize, keys.length));
-  const [data, add] = useReducer(
-    (prev, [key, item]) => ({ ...prev, [key]: item }),
-    {}
-  );
+  const [data, setData] = useState({});
 
   const slice = useMemo(() => keys.slice(0, size), [keys, size]);
 
@@ -63,7 +59,7 @@ function List({ keys }: Props) {
       .forEach((key) => {
         queue.add(async () => {
           const result = await get(`item/${key}.json`);
-          add([key, result]);
+          setData((prev) => ({ ...prev, [key]: result }));
         });
       });
   }, [size]);
