@@ -9,6 +9,7 @@ import React, {
 } from "react";
 
 import { get } from "../api";
+import useMap from "../hooks/useMap";
 import useSet from "../hooks/useSet";
 import useWindowEvent from "../hooks/useWindowEvent";
 
@@ -49,19 +50,19 @@ export type Props = { keys: number[] };
 
 function List({ keys }: Props) {
   const [size, setSize] = useState(Math.min(pageSize, keys.length));
-  const [data, setData] = useState({});
+
+  const data = useMap<number, unknown>();
+  const loading = useSet<number>();
 
   const slice = useMemo(() => keys.slice(0, size), [keys, size]);
 
-  const loading = useSet<number>();
-
   useEffect(() => {
     slice
-      .filter((key) => !(key in data) && !loading.has(key))
+      .filter((key) => !data.has(key) && !loading.has(key))
       .forEach((key) => {
         queue.add(async () => {
           const result = await get(`item/${key}.json`);
-          setData((prev) => ({ ...prev, [key]: result }));
+          data.set(key, result);
         });
 
         loading.add(key);
@@ -83,7 +84,7 @@ function List({ keys }: Props) {
   const open = useCallback(
     () =>
       Array.from(selection).forEach((key) => {
-        const { url } = data[key];
+        const { url } = data.get(key);
         window.open(url, "_blank");
       }),
     [data, selection]
@@ -164,8 +165,8 @@ function List({ keys }: Props) {
                 <span className="w-3ch flex-none text-center text-xs text-stone-400">
                   {index + 1}
                 </span>
-                {key in data ? (
-                  <Item data={data[key]} highlighted={index === cursor} />
+                {data.has(key) ? (
+                  <Item data={data.get(key)} highlighted={index === cursor} />
                 ) : (
                   <a href={`https://news.ycombinator.com/item?id=${key}`}>…</a>
                 )}
