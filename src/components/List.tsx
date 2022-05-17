@@ -53,16 +53,20 @@ function List({ keys }: Props) {
 
   const slice = useMemo(() => keys.slice(0, size), [keys, size]);
 
+  const loading = useSet<number>();
+
   useEffect(() => {
     slice
-      .filter((key) => !(key in data))
+      .filter((key) => !(key in data) && !loading.has(key))
       .forEach((key) => {
         queue.add(async () => {
           const result = await get(`item/${key}.json`);
           setData((prev) => ({ ...prev, [key]: result }));
         });
+
+        loading.add(key);
       });
-  }, [size]);
+  }, [data, loading, slice]);
 
   const selection = useSet<number>();
   const [cursor, setCursor] = useState(undefined);
