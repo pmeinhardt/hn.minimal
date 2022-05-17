@@ -45,7 +45,7 @@ function Item({
   );
 }
 
-export type Props = { keys: string[] };
+export type Props = { keys: number[] };
 
 function List({ keys }: Props) {
   const [size, setSize] = useState(Math.min(pageSize, keys.length));
