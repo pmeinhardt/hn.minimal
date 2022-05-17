@@ -10,6 +10,7 @@ import React, {
 } from "react";
 
 import { get } from "../api";
+import useSet from "../hooks/useSet";
 import useWindowEvent from "../hooks/useWindowEvent";
 
 const queue = new Queue({ concurrency: 4 });
@@ -67,21 +68,11 @@ function List({ keys }: Props) {
       });
   }, [size]);
 
-  const [selection, setSelection] = useState({});
+  const selection = useSet<number>();
   const [cursor, setCursor] = useState(undefined);
 
-  const selected = useMemo(
-    () =>
-      Object.entries(selection)
-        .filter(([, value]) => value)
-        .map(([key]) => data[key]),
-    [data, selection]
-  );
-
   const toggle = useCallback(
-    (key) => {
-      setSelection({ ...selection, [key]: !selection[key] });
-    },
+    (key) => (selection.has(key) ? selection.delete(key) : selection.add(key)),
     [selection]
   );
 
@@ -89,15 +80,21 @@ function List({ keys }: Props) {
     setSize(Math.min(size + pageSize, keys.length));
   }, [keys, size]);
 
-  const open = useCallback(() => {
-    selected.forEach(({ url }) => window.open(url, "_blank"));
-  }, [selected]);
+  const open = useCallback(
+    () =>
+      Array.from(selection).forEach((key) => {
+        const { url } = data[key];
+        window.open(url, "_blank");
+      }),
+    [data, selection]
+  );
 
   const itemRef = useRef();
 
   const onToggleSelection = useCallback(
     (event) => {
-      toggle(event.target.value);
+      const key = Number.parseInt(event.target.value, 10);
+      toggle(key);
     },
     [toggle]
   );
@@ -132,7 +129,7 @@ function List({ keys }: Props) {
           break;
       }
     },
-    [cursor, data, keys, reveal, selection, size]
+    [cursor, keys, open, reveal, size, toggle]
   );
 
   useWindowEvent("keydown", onKeyDown);
@@ -161,7 +158,7 @@ function List({ keys }: Props) {
                   className="accent-cyan-600"
                   type="checkbox"
                   value={key}
-                  checked={selection[key] ?? false}
+                  checked={selection.has(key)}
                   onChange={onToggleSelection}
                 />
                 <span className="w-3ch flex-none text-center text-xs text-stone-400">
@@ -195,7 +192,7 @@ function List({ keys }: Props) {
           </li>
         )}
       </ol>
-      {selected.length > 0 && (
+      {selection.size > 0 && (
         <div className="fixed bottom-0 right-0 p-4">
           <button
             type="button"
