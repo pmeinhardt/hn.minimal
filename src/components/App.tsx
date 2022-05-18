@@ -13,6 +13,8 @@ function App(/* _: Props */) {
   const [error, setError] = useState(undefined);
   const [keys, setKeys] = useState(undefined);
 
+  const marquee = useRef();
+
   useEffect(() => {
     (async function load() {
       try {
@@ -28,29 +30,12 @@ function App(/* _: Props */) {
     <>
       <Header>
         <h1 className="text-2xl font-bold">hn</h1>
-        {keys && (
-          <div className="font-mono text-xs">
-            <ul className="flex gap-5">
-              <li>
-                <kbd>j</kbd> ↓
-              </li>
-              <li>
-                <kbd>k</kbd> ↑
-              </li>
-              <li>
-                <kbd>x</kbd> ✓
-              </li>
-              <li>
-                <kbd>o</kbd> ▹
-              </li>
-            </ul>
-          </div>
-        )}
+        <div ref={marquee} />
       </Header>
       <Main>
         {/* eslint-disable-next-line no-nested-ternary */}
         {keys ? (
-          <List keys={keys} />
+          <List marquee={marquee.current} keys={keys} />
         ) : error ? (
           <div className="py-4">
             <ErrorMessage error={error} />

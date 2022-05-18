@@ -1,6 +1,7 @@
 import clsx from "clsx";
 import Queue from "p-queue";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 
 import { get } from "../api";
 import useMap from "../hooks/useMap";
@@ -10,6 +11,10 @@ import useWindowEvent from "../hooks/useWindowEvent";
 const queue = new Queue({ concurrency: 4 });
 
 const pageSize = 15;
+
+function Hints({ children, container }) {
+  return container ? createPortal(children, container) : null;
+}
 
 function Item({
   data,
@@ -40,9 +45,9 @@ function Item({
   );
 }
 
-export type Props = { keys: number[] };
+export type Props = { marquee: Element; keys: number[] };
 
-function List({ keys }: Props) {
+function List({ marquee, keys }: Props) {
   const [size, setSize] = useState(Math.min(pageSize, keys.length));
 
   const data = useMap<number, unknown>();
@@ -135,6 +140,28 @@ function List({ keys }: Props) {
 
   return (
     <form>
+      {keys && (
+        <Hints container={marquee}>
+          <div className="font-mono text-xs">
+            <ul className="flex gap-5">
+              <li className={clsx(cursor >= keys.length - 1 && "opacity-50")}>
+                <kbd>j</kbd> ↓
+              </li>
+              <li className={clsx(!(cursor > 0) && "opacity-50")}>
+                <kbd>k</kbd> ↑
+              </li>
+              <li
+                className={clsx(typeof cursor === "undefined" && "opacity-50")}
+              >
+                <kbd>x</kbd> ✓
+              </li>
+              <li className={clsx(selection.size === 0 && "opacity-50")}>
+                <kbd>o</kbd> ▹
+              </li>
+            </ul>
+          </div>
+        </Hints>
+      )}
       <ol>
         {slice.map((key, index) => (
           <li
