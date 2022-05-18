@@ -1,49 +1,19 @@
 import clsx from "clsx";
 import Queue from "p-queue";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { createPortal } from "react-dom";
 
 import { get } from "../api";
 import useMap from "../hooks/useMap";
 import useSet from "../hooks/useSet";
 import useWindowEvent from "../hooks/useWindowEvent";
+import Hints from "./List/Hints";
+import Item from "./List/Item";
+import href from "./List/link";
+import type { Entry } from "./List/types";
 
 const queue = new Queue({ concurrency: 4 });
 
 const pageSize = 15;
-
-function Hints({ children, container }) {
-  return container ? createPortal(children, container) : null;
-}
-
-function Item({
-  data,
-  highlighted,
-}: {
-  data: { title: string; url?: string };
-  highlighted: boolean;
-}) {
-  const host = useMemo(() => data.url && new URL(data.url).host, [data.url]);
-
-  return (
-    <div>
-      <a
-        href={data.url}
-        className="text-sm text-stone-800 visited:text-stone-400"
-      >
-        {data.title}
-      </a>
-      <span
-        className={clsx(
-          "ml-2 text-xs text-stone-400",
-          !highlighted && "hidden"
-        )}
-      >
-        {host}
-      </span>
-    </div>
-  );
-}
 
 export type Props = { ids: number[]; marquee: Element };
 
@@ -68,8 +38,8 @@ function List({ marquee, ids }: Props) {
       });
   }, [data, loading, slice]);
 
-  const selection = useSet<number>();
   const [cursor, setCursor] = useState(undefined);
+  const selection = useSet<number>();
 
   const toggle = useCallback(
     (id) => (selection.has(id) ? selection.delete(id) : selection.add(id)),
@@ -83,7 +53,7 @@ function List({ marquee, ids }: Props) {
   const open = useCallback(
     () =>
       Array.from(selection).forEach((id) => {
-        const { url } = data.get(id);
+        const url = href(data.get(id) as Entry);
         window.open(url, "_blank");
       }),
     [data, selection]
@@ -136,7 +106,7 @@ function List({ marquee, ids }: Props) {
 
   useEffect(() => {
     itemRef.current?.scrollIntoView({ block: "nearest" });
-  }, [itemRef.current]);
+  }, [cursor]);
 
   return (
     <form>
@@ -187,9 +157,12 @@ function List({ marquee, ids }: Props) {
                   {index + 1}
                 </span>
                 {data.has(id) ? (
-                  <Item data={data.get(id)} highlighted={index === cursor} />
+                  <Item
+                    data={data.get(id) as Entry}
+                    highlighted={index === cursor}
+                  />
                 ) : (
-                  <a href={`https://news.ycombinator.com/item?id=${id}`}>…</a>
+                  <a href={href({ id })}>…</a>
                 )}
               </label>
             </div>
