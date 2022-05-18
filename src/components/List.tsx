@@ -1,12 +1,6 @@
 import clsx from "clsx";
 import Queue from "p-queue";
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { get } from "../api";
 import useMap from "../hooks/useMap";

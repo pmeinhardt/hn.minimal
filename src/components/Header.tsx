@@ -1,6 +1,6 @@
-import React from "react";
+import type { PropsWithChildren } from "react";
 
-export type Props = React.PropsWithChildren<never>;
+export type Props = PropsWithChildren<never>;
 
 function Header({ children }: Props) {
   return (
