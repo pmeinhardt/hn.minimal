@@ -104,7 +104,7 @@ function List({ marquee, keys }: Props) {
       switch (event.key) {
         case "j": // down
           if (typeof cursor === "number") {
-            setCursor(Math.min(cursor + 1, size, keys.length));
+            setCursor(Math.min(cursor + 1, size, keys.length - 1));
             if (cursor >= size) reveal();
           } else {
             setCursor(0);
