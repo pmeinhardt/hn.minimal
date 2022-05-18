@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 
 import { get } from "../api";
+import ErrorMessage from "./ErrorMessage";
 import Header from "./Header";
 import List from "./List";
 import Main from "./Main";
@@ -52,8 +53,7 @@ function App(/* _: Props */) {
           <List keys={keys} />
         ) : error ? (
           <div className="py-4">
-            <h4 className="mb-1 text-xl font-bold">Oops! 💥</h4>
-            <p>{error.message}</p>
+            <ErrorMessage error={error} />
           </div>
         ) : (
           <div className="flex justify-center py-4">
