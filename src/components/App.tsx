@@ -11,7 +11,7 @@ export type Props = never;
 
 function App(/* _: Props */) {
   const [error, setError] = useState(undefined);
-  const [keys, setKeys] = useState(undefined);
+  const [ids, setIds] = useState(undefined);
 
   const marquee = useRef();
 
@@ -19,7 +19,7 @@ function App(/* _: Props */) {
     (async function load() {
       try {
         const result = await get("topstories.json");
-        setKeys(result);
+        setIds(result);
       } catch (e) {
         setError(e);
       }
@@ -34,8 +34,8 @@ function App(/* _: Props */) {
       </Header>
       <Main>
         {/* eslint-disable-next-line no-nested-ternary */}
-        {keys ? (
-          <List marquee={marquee.current} keys={keys} />
+        {ids ? (
+          <List ids={ids} marquee={marquee.current} />
         ) : error ? (
           <div className="py-4">
             <ErrorMessage error={error} />

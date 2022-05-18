@@ -45,26 +45,26 @@ function Item({
   );
 }
 
-export type Props = { marquee: Element; keys: number[] };
+export type Props = { ids: number[]; marquee: Element };
 
-function List({ marquee, keys }: Props) {
-  const [size, setSize] = useState(Math.min(pageSize, keys.length));
+function List({ marquee, ids }: Props) {
+  const [size, setSize] = useState(Math.min(pageSize, ids.length));
 
   const data = useMap<number, unknown>();
   const loading = useSet<number>();
 
-  const slice = useMemo(() => keys.slice(0, size), [keys, size]);
+  const slice = useMemo(() => ids.slice(0, size), [ids, size]);
 
   useEffect(() => {
     slice
-      .filter((key) => !data.has(key) && !loading.has(key))
-      .forEach((key) => {
+      .filter((id) => !data.has(id) && !loading.has(id))
+      .forEach((id) => {
         queue.add(async () => {
-          const result = await get(`item/${key}.json`);
-          data.set(key, result);
+          const result = await get(`item/${id}.json`);
+          data.set(id, result);
         });
 
-        loading.add(key);
+        loading.add(id);
       });
   }, [data, loading, slice]);
 
@@ -72,18 +72,18 @@ function List({ marquee, keys }: Props) {
   const [cursor, setCursor] = useState(undefined);
 
   const toggle = useCallback(
-    (key) => (selection.has(key) ? selection.delete(key) : selection.add(key)),
+    (id) => (selection.has(id) ? selection.delete(id) : selection.add(id)),
     [selection]
   );
 
   const reveal = useCallback(() => {
-    setSize(Math.min(size + pageSize, keys.length));
-  }, [keys, size]);
+    setSize(Math.min(size + pageSize, ids.length));
+  }, [ids, size]);
 
   const open = useCallback(
     () =>
-      Array.from(selection).forEach((key) => {
-        const { url } = data.get(key);
+      Array.from(selection).forEach((id) => {
+        const { url } = data.get(id);
         window.open(url, "_blank");
       }),
     [data, selection]
@@ -93,8 +93,8 @@ function List({ marquee, keys }: Props) {
 
   const onToggleSelection = useCallback(
     (event) => {
-      const key = Number.parseInt(event.target.value, 10);
-      toggle(key);
+      const id = Number.parseInt(event.target.value, 10);
+      toggle(id);
     },
     [toggle]
   );
@@ -104,7 +104,7 @@ function List({ marquee, keys }: Props) {
       switch (event.key) {
         case "j": // down
           if (typeof cursor === "number") {
-            setCursor(Math.min(cursor + 1, size, keys.length - 1));
+            setCursor(Math.min(cursor + 1, size, ids.length - 1));
             if (cursor >= size) reveal();
           } else {
             setCursor(0);
@@ -118,7 +118,7 @@ function List({ marquee, keys }: Props) {
           break;
 
         case "x": // toggle
-          toggle(keys[cursor]);
+          toggle(ids[cursor]);
           break;
 
         case "o": // open
@@ -129,7 +129,7 @@ function List({ marquee, keys }: Props) {
           break;
       }
     },
-    [cursor, keys, open, reveal, size, toggle]
+    [cursor, ids, open, reveal, size, toggle]
   );
 
   useWindowEvent("keydown", onKeyDown);
@@ -140,11 +140,11 @@ function List({ marquee, keys }: Props) {
 
   return (
     <form>
-      {keys && (
+      {ids && (
         <Hints container={marquee}>
           <div className="font-mono text-xs">
             <ul className="flex gap-5">
-              <li className={clsx(cursor >= keys.length - 1 && "opacity-50")}>
+              <li className={clsx(cursor >= ids.length - 1 && "opacity-50")}>
                 <kbd>j</kbd> ↓
               </li>
               <li className={clsx(!(cursor > 0) && "opacity-50")}>
@@ -163,9 +163,9 @@ function List({ marquee, keys }: Props) {
         </Hints>
       )}
       <ol>
-        {slice.map((key, index) => (
+        {slice.map((id, index) => (
           <li
-            key={key}
+            key={id}
             className="-mx-2"
             ref={index === cursor ? itemRef : undefined}
           >
@@ -179,23 +179,23 @@ function List({ marquee, keys }: Props) {
                 <input
                   className="accent-cyan-600"
                   type="checkbox"
-                  value={key}
-                  checked={selection.has(key)}
+                  value={id}
+                  checked={selection.has(id)}
                   onChange={onToggleSelection}
                 />
                 <span className="w-3ch flex-none text-center text-xs text-stone-400">
                   {index + 1}
                 </span>
-                {data.has(key) ? (
-                  <Item data={data.get(key)} highlighted={index === cursor} />
+                {data.has(id) ? (
+                  <Item data={data.get(id)} highlighted={index === cursor} />
                 ) : (
-                  <a href={`https://news.ycombinator.com/item?id=${key}`}>…</a>
+                  <a href={`https://news.ycombinator.com/item?id=${id}`}>…</a>
                 )}
               </label>
             </div>
           </li>
         ))}
-        {slice.length < keys.length && (
+        {slice.length < ids.length && (
           <li
             key="more"
             className="-mx-2"
