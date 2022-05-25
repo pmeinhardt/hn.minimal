@@ -1,8 +1,8 @@
 import clsx from "clsx";
 import { useMemo } from "react";
 
+import type { Entry } from "../../types";
 import href from "./link";
-import type { Entry } from "./types";
 
 export type Props = { data: Entry; highlighted: boolean };
 

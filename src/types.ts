@@ -48,3 +48,5 @@ export type Story = {
   type: "story";
   url: string;
 };
+
+export type Entry = Ask | Job | Poll | Story;

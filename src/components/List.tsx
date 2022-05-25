@@ -6,10 +6,10 @@ import { get } from "../api";
 import useMap from "../hooks/useMap";
 import useSet from "../hooks/useSet";
 import useWindowEvent from "../hooks/useWindowEvent";
+import type { Entry } from "../types";
 import Hints from "./List/Hints";
 import Item from "./List/Item";
 import href from "./List/link";
-import type { Entry } from "./List/types";
 
 const queue = new Queue({ concurrency: 4 });
 
@@ -59,7 +59,7 @@ function List({ marquee, ids }: Props) {
     [data, selection]
   );
 
-  const itemRef = useRef();
+  const itemRef = useRef<HTMLLIElement>();
 
   const onToggleSelection = useCallback(
     (event) => {
@@ -105,7 +105,7 @@ function List({ marquee, ids }: Props) {
   useWindowEvent("keydown", onKeyDown);
 
   useEffect(() => {
-    itemRef.current?.scrollIntoView({ block: "nearest" });
+    if (itemRef.current) itemRef.current.scrollIntoView({ block: "nearest" });
   }, [cursor]);
 
   return (

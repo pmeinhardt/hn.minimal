@@ -18,6 +18,17 @@
   ],
   "rules": {
     "import/extensions": ["error", { "js": "never", "json": "always", "ts": "never" }],
+    "import/no-extraneous-dependencies": [
+      "error",
+      {
+        "devDependencies": [
+          "src/__test-helpers__/**/*.ts",
+          "src/**/*.test.tsx",
+          "src/**/*.test.ts",
+          "jest.setup.ts"
+        ]
+      }
+    ],
     "react/jsx-filename-extension": ["error", { "extensions": [".tsx"] }],
     "simple-import-sort/imports": "error",
     "simple-import-sort/exports": "error"

@@ -7,6 +7,8 @@ import List from "./List";
 import Main from "./Main";
 import Spinner from "./Spinner";
 
+const reload = () => window.location.reload();
+
 export type Props = never;
 
 function App(/* _: Props */) {
@@ -39,6 +41,9 @@ function App(/* _: Props */) {
         ) : error ? (
           <div className="py-4">
             <ErrorMessage error={error} />
+            <button type="button" onClick={reload}>
+              Try again
+            </button>
           </div>
         ) : (
           <div className="flex justify-center py-4">
