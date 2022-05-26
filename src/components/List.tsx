@@ -145,8 +145,12 @@ function List({ marquee, ids }: Props) {
                 index === cursor && "font-bold"
               )}
             >
-              <label className="flex items-center gap-2 px-2 py-3">
+              <label
+                className="flex items-center gap-2 px-2 py-3"
+                htmlFor={`checkbox-${id}`}
+              >
                 <input
+                  id={`checkbox-${id}`}
                   className="accent-cyan-600"
                   type="checkbox"
                   value={id}
