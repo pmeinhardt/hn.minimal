@@ -30,8 +30,16 @@ function List({ marquee, ids }: Props) {
       .filter((id) => !data.has(id) && !loading.has(id))
       .forEach((id) => {
         queue.add(async () => {
-          const result = await get(`item/${id}.json`);
-          data.set(id, result);
+          try {
+            const result = await get(`item/${id}.json`);
+            data.set(id, result);
+          } catch (error) {
+            if (process.env.NODE_ENV !== "test") {
+              console.error(error); // eslint-disable-line no-console
+            }
+          } finally {
+            loading.delete(id);
+          }
         });
 
         loading.add(id);
