@@ -25,11 +25,12 @@
           "src/__test-helpers__/**/*.ts",
           "src/**/*.test.tsx",
           "src/**/*.test.ts",
-          "jest.setup.ts"
+          "dev/**/*.ts"
         ]
       }
     ],
     "react/jsx-filename-extension": ["error", { "extensions": [".tsx"] }],
+    "react/jsx-props-no-spreading": "off",
     "simple-import-sort/imports": "error",
     "simple-import-sort/exports": "error"
   }

@@ -1,5 +1,7 @@
 import { Chance } from "chance";
 
-export const SEED = process.env.SEED || new Chance().hash();
+const seed = process.env.SEED;
 
-export default new Chance(SEED);
+const generator = seed ? new Chance(seed) : new Chance();
+
+export default generator;

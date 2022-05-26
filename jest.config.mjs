@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   globals: {
     "ts-jest": {
       tsconfig: {
@@ -7,8 +7,9 @@ module.exports = {
       },
     },
   },
+  globalSetup: "./dev/jest/global-setup.ts",
   preset: "ts-jest/presets/default",
-  setupFilesAfterEnv: ["./jest.setup.ts"],
+  setupFilesAfterEnv: ["./dev/jest/setup.ts"],
   testEnvironment: "jest-environment-jsdom",
   transformIgnorePatterns: ["/node_modules/", "\\.pnp\\.[^\\/]+$"],
 };

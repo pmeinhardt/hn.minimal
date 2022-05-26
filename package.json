@@ -8,7 +8,7 @@
   "scripts": {
     "start": "parcel",
     "build": "parcel build",
-    "lint": "eslint --ext .js,.ts,.tsx --ignore-path .gitignore . --max-warnings 0",
+    "lint": "eslint --ext .js,.mjs,.ts,.tsx --ignore-path .gitignore . --max-warnings 0",
     "test": "jest"
   },
   "dependencies": {
