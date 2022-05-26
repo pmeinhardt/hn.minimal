@@ -4,9 +4,11 @@ import { useMemo } from "react";
 import type { Entry } from "../../types";
 import href from "./link";
 
-export type Props = { data: Entry; highlighted: boolean };
+// For some reason ESLint reports an issue here even though we provide a default.
+// eslint-disable-next-line react/require-default-props
+export type Props = { data: Entry; highlighted?: boolean };
 
-function Item({ data, highlighted }: Props) {
+function Item({ data, highlighted = false }: Props) {
   const host = useMemo(
     () => ("url" in data && data.url ? new URL(data.url).host : null),
     [data]
