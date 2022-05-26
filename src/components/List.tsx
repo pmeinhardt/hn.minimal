@@ -6,7 +6,7 @@ import { get } from "../api";
 import useMap from "../hooks/useMap";
 import useSet from "../hooks/useSet";
 import useWindowEvent from "../hooks/useWindowEvent";
-import type { Entry } from "../types";
+import type { Entry, ID } from "../types";
 import Hints from "./List/Hints";
 import Item from "./List/Item";
 import href from "./List/link";
@@ -15,13 +15,13 @@ const queue = new Queue({ concurrency: 4 });
 
 const pageSize = 15;
 
-export type Props = { ids: number[]; marquee: Element };
+export type Props = { ids: ID[]; marquee: Element };
 
 function List({ marquee, ids }: Props) {
   const [size, setSize] = useState(Math.min(pageSize, ids.length));
 
-  const data = useMap<number, unknown>();
-  const loading = useSet<number>();
+  const data = useMap<ID, unknown>();
+  const loading = useSet<ID>();
 
   const slice = useMemo(() => ids.slice(0, size), [ids, size]);
 

@@ -1,5 +1,5 @@
-type ID = number;
-type Timestamp = number;
+export type ID = number;
+export type Timestamp = number;
 
 export type Ask = {
   by: string;

@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 
 import { get } from "../api";
+import type { ID } from "../types";
 import ErrorMessage from "./ErrorMessage";
 import Header from "./Header";
 import List from "./List";
@@ -12,8 +13,8 @@ const reload = () => window.location.reload();
 export type Props = never;
 
 function App(/* _: Props */) {
-  const [error, setError] = useState(undefined);
-  const [ids, setIds] = useState(undefined);
+  const [error, setError] = useState<Error>();
+  const [ids, setIds] = useState<ID[]>();
 
   const marquee = useRef();
 
@@ -21,7 +22,7 @@ function App(/* _: Props */) {
     (async function load() {
       try {
         const result = await get("topstories.json");
-        setIds(result);
+        setIds(result as ID[]);
       } catch (e) {
         setError(e);
       }
