@@ -46,13 +46,13 @@ describe("App", () => {
     (get as jest.Mock).mockReturnValue(promise);
     const screen = subject();
 
-    const count = random.natural({ max: 10 });
-    const entries = times(count, id);
-    await act(async () => resolve(entries));
+    const count = random.natural({ min: 1, max: 6 });
+    const ids = times(count, id);
+    await act(async () => resolve(ids));
 
     const main = screen.getByRole("main");
     const list = within(main).getByRole("list");
     const items = within(list).getAllByRole("listitem");
-    expect(items.length).toBe(entries.length);
+    expect(items.length).toBe(ids.length);
   });
 });
