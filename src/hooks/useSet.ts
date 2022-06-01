@@ -16,6 +16,12 @@ function useSet<T>(iterable?: Iterable<T>) {
             next.add(x);
             return next;
           }),
+        clear: () => {
+          update((prev) => {
+            if (prev.size === 0) return prev;
+            return new Set<T>();
+          });
+        },
         delete: (x: T) =>
           update((prev) => {
             if (!prev.has(x)) return prev;

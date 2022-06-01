@@ -20,10 +20,10 @@ export type Props = { ids: ID[]; marquee: Element };
 function List({ marquee, ids }: Props) {
   const [size, setSize] = useState(Math.min(pageSize, ids.length));
 
-  const data = useMap<ID, unknown>();
-  const loading = useSet<ID>();
-
   const slice = useMemo(() => ids.slice(0, size), [ids, size]);
+
+  const data = useMap<ID, Entry>();
+  const loading = useSet<ID>();
 
   useEffect(() => {
     slice
@@ -32,7 +32,7 @@ function List({ marquee, ids }: Props) {
         queue.add(async () => {
           try {
             const result = await get(`item/${id}.json`);
-            data.set(id, result);
+            data.set(id, result as Entry);
           } catch (error) {
             if (process.env.NODE_ENV !== "test") {
               console.error(error); // eslint-disable-line no-console
@@ -46,8 +46,8 @@ function List({ marquee, ids }: Props) {
       });
   }, [data, loading, slice]);
 
-  const [cursor, setCursor] = useState(undefined);
-  const selection = useSet<number>();
+  const [cursor, setCursor] = useState<number>();
+  const selection = useSet<ID>();
 
   const toggle = useCallback(
     (id) => (selection.has(id) ? selection.delete(id) : selection.add(id)),
@@ -61,13 +61,11 @@ function List({ marquee, ids }: Props) {
   const open = useCallback(
     () =>
       Array.from(selection).forEach((id) => {
-        const url = href(data.get(id) as Entry);
+        const url = href(data.get(id));
         window.open(url, "_blank");
       }),
     [data, selection]
   );
-
-  const itemRef = useRef<HTMLLIElement>();
 
   const onToggleSelection = useCallback(
     (event) => {
@@ -99,6 +97,10 @@ function List({ marquee, ids }: Props) {
           toggle(ids[cursor]);
           break;
 
+        case "e": // clear selection
+          selection.clear();
+          break;
+
         case "o": // open
           open();
           break;
@@ -107,10 +109,12 @@ function List({ marquee, ids }: Props) {
           break;
       }
     },
-    [cursor, ids, open, reveal, size, toggle]
+    [cursor, ids, open, reveal, selection, size, toggle]
   );
 
   useWindowEvent("keydown", onKeyDown);
+
+  const itemRef = useRef<HTMLLIElement>();
 
   useEffect(() => {
     if (itemRef.current) itemRef.current.scrollIntoView({ block: "nearest" });
@@ -122,7 +126,7 @@ function List({ marquee, ids }: Props) {
         <Hints container={marquee}>
           <div className="font-mono text-xs">
             <ul className="flex gap-5">
-              <li className={clsx(cursor >= ids.length - 1 && "opacity-50")}>
+              <li className={clsx(!(cursor < ids.length - 1) && "opacity-50")}>
                 <kbd>j</kbd> ↓
               </li>
               <li className={clsx(!(cursor > 0) && "opacity-50")}>
@@ -169,10 +173,7 @@ function List({ marquee, ids }: Props) {
                   {index + 1}
                 </span>
                 {data.has(id) ? (
-                  <Item
-                    data={data.get(id) as Entry}
-                    highlighted={index === cursor}
-                  />
+                  <Item data={data.get(id)} highlighted={index === cursor} />
                 ) : (
                   <a href={href({ id })}>…</a>
                 )}
@@ -180,7 +181,7 @@ function List({ marquee, ids }: Props) {
             </div>
           </li>
         ))}
-        {slice.length < ids.length && (
+        {size < ids.length && (
           <li
             key="more"
             className="-mx-2"

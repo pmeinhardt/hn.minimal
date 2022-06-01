@@ -9,6 +9,12 @@ function useMap<K, V>(iterable?: Iterable<[K, V]>) {
     () =>
       Object.freeze({
         [Symbol.iterator]: () => map[Symbol.iterator](),
+        clear: () => {
+          update((prev) => {
+            if (prev.size === 0) return prev;
+            return new Map<K, V>();
+          });
+        },
         delete: (k: K) =>
           update((prev) => {
             if (!prev.has(k)) return prev;
