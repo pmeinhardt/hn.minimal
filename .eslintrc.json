@@ -17,6 +17,7 @@
     "simple-import-sort"
   ],
   "rules": {
+    "@typescript-eslint/no-explicit-any": "off",
     "import/extensions": ["error", { "js": "never", "json": "always", "ts": "never" }],
     "import/no-extraneous-dependencies": [
       "error",

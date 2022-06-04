@@ -1,5 +1,5 @@
 type Resolve<T> = (value: T) => void;
-type Reject = (reason: any) => void; // eslint-disable-line @typescript-eslint/no-explicit-any
+type Reject = (reason: any) => void;
 
 export function deferred<T = unknown>(): [
   Promise<T>,

@@ -206,6 +206,7 @@ function List({ marquee, ids }: Props) {
             type="button"
             onClick={open}
             className="text-shadow-flamingo/20 block flex h-10 w-10 items-center justify-center rounded-full bg-sunset/90 text-stone-100 drop-shadow-md"
+            aria-label="Open selected entries"
           >
             ▹
           </button>
