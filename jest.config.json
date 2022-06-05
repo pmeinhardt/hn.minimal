@@ -1,0 +1,10 @@
+{
+  "globalSetup": "./dev/jest/global-setup.ts",
+  "roots": ["<rootDir>/src/"],
+  "setupFilesAfterEnv": ["./dev/jest/setup.ts"],
+  "testEnvironment": "jest-environment-jsdom",
+  "transform": {
+    "^.+\\.tsx?$": ["@swc/jest"]
+  },
+  "transformIgnorePatterns": ["/node_modules/", "\\.pnp\\.[^\\/]+$"]
+}
