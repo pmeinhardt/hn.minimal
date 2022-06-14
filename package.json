@@ -12,6 +12,7 @@
     "test": "jest"
   },
   "dependencies": {
+    "@types/lodash": "^4.14.182",
     "@types/react": "^18.0.9",
     "@types/react-dom": "^18.0.4",
     "clsx": "^1.1.1",
