@@ -138,6 +138,9 @@ function List({ marquee, ids }: Props) {
                 <kbd>x</kbd> ✓
               </li>
               <li className={clsx(selection.size === 0 && "opacity-50")}>
+                <kbd>e</kbd> ↤
+              </li>
+              <li className={clsx(selection.size === 0 && "opacity-50")}>
                 <kbd>o</kbd> ▹
               </li>
             </ul>
