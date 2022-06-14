@@ -6,6 +6,8 @@ _a minimal Hacker News client tailored to my reading habits 🪡_
 - select interesting stories first, then open them all in tabs for reading ✏️
 - keyboard controls ⌨️
 
+_Note: This is a little side-project I dabbled in with half a 🧠 for some exploration and prototyping. It does not quite reflect the amount of care I would pour into any serious project._
+
 ## Prerequisites
 
 Be sure to have a recent version of [Node.js](https://nodejs.dev/learn/how-to-install-nodejs) installed (i.e. Node.js 16+).
